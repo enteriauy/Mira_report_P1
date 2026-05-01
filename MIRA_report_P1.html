@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte Clínico — P1 — Enteria</title>
+<link href="https://fonts.googleapis.com/css2?family=KOHO:wght@400;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark:#363636; --lime:#d4ea7c; --purple:#a7669a;
+  --cream:#f1e8d9; --white:#ffffff; --text-mid:rgba(54,54,54,0.62);
+  --shadow:0 2px 12px rgba(54,54,54,0.07); --shadow-lg:0 8px 32px rgba(54,54,54,0.13);
+  --r:16px; --r-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.6;}
+h1,h2,h3{font-family:'KOHO',sans-serif;}
+.wave-deco{position:absolute;pointer-events:none;user-select:none;}
+.header{background:var(--dark);color:var(--white);padding:3rem 2rem 5.5rem;text-align:center;position:relative;overflow:hidden;}
+.header .wave-deco{color:var(--lime);width:800px;bottom:-50px;right:-80px;opacity:0.05;}
+.header-logo{height:46px;margin-bottom:1.4rem;filter:brightness(0) invert(1);}
+.kicker{display:block;font-size:0.68rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--lime);margin-bottom:0.4rem;}
+.header h1{font-size:2rem;font-weight:700;letter-spacing:0.02em;margin-bottom:0.25rem;}
+.header .sub{font-size:0.9rem;opacity:0.5;font-weight:300;letter-spacing:0.06em;}
+.header-meta{display:flex;justify-content:center;gap:1.5rem;margin-top:1.5rem;font-size:0.79rem;flex-wrap:wrap;}
+.header-meta span{display:flex;align-items:center;gap:0.35rem;background:rgba(255,255,255,0.07);padding:0.28rem 0.85rem;border-radius:20px;letter-spacing:0.04em;}
+.container{max-width:1040px;margin:0 auto;padding:0 2rem 3rem;}
+.score-section{max-width:1040px;margin:-3.2rem auto 0;padding:0 2rem;position:relative;z-index:10;}
+.score-card{background:var(--white);border-radius:var(--r);padding:2rem;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:start;position:relative;overflow:hidden;}
+.score-card .wave-deco{color:var(--lime);width:280px;bottom:-30px;right:-10px;opacity:0.09;}
+.score-visual{text-align:center;min-width:155px;}
+.score-index-label{font-family:'KOHO',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mid);margin-bottom:0.75rem;}
+.score-circle{width:138px;height:138px;border-radius:50%;background:conic-gradient(#a7669a 64.2%, #e0e0e0 64.2%);display:flex;align-items:center;justify-content:center;margin:0 auto;position:relative;}
+.score-circle::before{content:'';width:106px;height:106px;background:white;border-radius:50%;position:absolute;}
+.score-value{position:relative;z-index:1;text-align:center;}
+.score-num{font-family:'KOHO',sans-serif;font-size:2.4rem;font-weight:700;color:#a7669a;line-height:1;}
+.score-lbl{font-size:0.7rem;color:var(--text-mid);margin-top:0.1rem;letter-spacing:0.06em;text-transform:uppercase;}
+.score-badge{display:inline-block;padding:0.32rem 1rem;border-radius:20px;background:#f1e8d9;color:#a7669a;font-weight:700;font-family:'KOHO',sans-serif;font-size:0.88rem;margin-top:0.7rem;letter-spacing:0.06em;}
+.score-desc{font-size:0.77rem;color:var(--text-mid);margin-top:0.5rem;line-height:1.45;max-width:145px;margin-left:auto;margin-right:auto;}
+.score-details{padding-top:0.2rem;}
+.score-details>h3{font-family:'KOHO',sans-serif;font-size:0.95rem;margin-bottom:1rem;font-weight:600;letter-spacing:0.02em;}
+.ind-group{margin-bottom:1rem;}
+.ind-group-label{font-size:0.65rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-mid);margin-bottom:0.45rem;padding-bottom:0.3rem;border-bottom:1px solid rgba(54,54,54,0.09);}
+.ind-item{display:flex;align-items:center;gap:0.55rem;padding:0.3rem 0;border-bottom:1px solid rgba(54,54,54,0.04);}
+.ind-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ind-name{flex:1;font-size:0.84rem;}
+.sev-pill{font-size:0.68rem;font-weight:600;padding:0.13rem 0.5rem;border-radius:10px;white-space:nowrap;letter-spacing:0.04em;}
+.has-tooltip{position:relative;cursor:help;}
+.section{margin-top:2.5rem;}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;}
+.section-icon{width:34px;height:34px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.section-kicker{font-size:0.66rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--purple);display:block;margin-bottom:0.15rem;}
+.section-title{font-family:'KOHO',sans-serif;font-size:1.2rem;font-weight:600;}
+.matrix-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;}
+.matrix-wrap{overflow-x:auto;}
+.impact-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+.impact-table th{background:var(--dark);color:var(--white);padding:0.65rem 0.4rem;text-align:center;font-weight:500;font-size:0.73rem;white-space:nowrap;letter-spacing:0.04em;}
+.impact-table th:first-child{text-align:left;padding-left:1.25rem;min-width:200px;}
+.impact-table td{padding:0.55rem 0.4rem;text-align:center;border-bottom:1px solid rgba(54,54,54,0.05);}
+.impact-table tr:last-child td{border-bottom:none;}
+.impact-table tr:hover td{background:rgba(212,234,124,0.08);}
+.action-cell{text-align:left !important;padding-left:1.25rem !important;font-size:0.79rem;}
+.impact-cell.high{color:#2E7D32;font-weight:700;font-size:0.87rem;}
+.impact-cell.med{color:var(--purple);font-size:0.82rem;}
+.impact-cell.none{color:rgba(54,54,54,0.12);}
+.matrix-footer{padding:0.7rem 1.25rem;background:rgba(212,234,124,0.1);display:flex;gap:1.5rem;font-size:0.76rem;color:var(--text-mid);border-top:1px solid rgba(54,54,54,0.05);}
+.matrix-footer span{display:flex;align-items:center;gap:0.4rem;}
+.phase-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:1.15rem;overflow:hidden;}
+.phase-header{background:var(--dark);color:var(--white);padding:1.2rem 1.75rem;display:flex;justify-content:space-between;align-items:flex-start;position:relative;overflow:hidden;}
+.phase-header .wave-deco{color:var(--lime);width:380px;bottom:-20px;right:-50px;opacity:0.06;}
+.phase-num-badge{display:inline-block;background:var(--lime);color:var(--dark);font-family:'KOHO',sans-serif;font-size:0.64rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:0.18rem 0.65rem;border-radius:12px;margin-bottom:0.35rem;}
+.phase-title h3{font-size:1.05rem;font-weight:600;position:relative;z-index:1;}
+.phase-period{font-size:0.75rem;opacity:0.55;margin-top:0.18rem;position:relative;z-index:1;}
+.phase-desc{font-size:0.74rem;opacity:0.42;margin-top:0.1rem;font-weight:300;position:relative;z-index:1;}
+.phase-weeks{background:rgba(255,255,255,0.1);padding:0.38rem 0.85rem;border-radius:20px;font-size:0.73rem;white-space:nowrap;align-self:center;letter-spacing:0.04em;position:relative;z-index:1;}
+.phase-body{padding:1.4rem;}
+.phase-objectives{display:flex;flex-wrap:wrap;gap:0.45rem;margin-bottom:1.2rem;}
+.obj-tag{padding:0.28rem 0.8rem;border-radius:20px;font-size:0.74rem;font-weight:600;letter-spacing:0.03em;}
+.obj-tag.inc{background:rgba(212,234,124,0.32);color:#2a5000;}
+.obj-tag.dec{background:rgba(167,102,154,0.14);color:var(--purple);}
+.intervention{background:#FAFAF8;border-radius:var(--r-sm);margin-bottom:0.6rem;overflow:hidden;border:1px solid rgba(54,54,54,0.07);}
+.intervention-header{padding:0.85rem 1.2rem;cursor:pointer;display:flex;align-items:center;gap:0.7rem;transition:background 0.18s;}
+.intervention-header:hover{background:rgba(212,234,124,0.1);}
+.int-icon{font-size:1.25rem;flex-shrink:0;}
+.int-info{flex:1;}
+.int-name{font-weight:600;font-size:0.86rem;letter-spacing:0.01em;}
+.int-indicators{font-size:0.72rem;color:var(--text-mid);margin-top:0.08rem;}
+.int-toggle{width:19px;height:19px;background:rgba(54,54,54,0.07);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.62rem;transition:transform 0.3s;flex-shrink:0;}
+.intervention.open .int-toggle{transform:rotate(180deg);}
+.diff-badge{padding:0.18rem 0.6rem;border-radius:12px;font-size:0.67rem;font-weight:600;white-space:nowrap;letter-spacing:0.03em;}
+.diff-baja{background:rgba(212,234,124,0.38);color:#2a5000;}
+.diff-media{background:rgba(167,102,154,0.14);color:var(--purple);}
+.diff-alta{background:rgba(198,40,40,0.09);color:#c62828;}
+.critico-badge{display:inline-block;background:#c62828;color:#fff;font-size:0.62rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:8px;letter-spacing:0.08em;margin-left:0.4rem;vertical-align:middle;cursor:help;}
+.intervention.critico{border-left:3px solid #c62828;}
+.intervention-body{padding:0 1.2rem 1.2rem;display:none;}
+.intervention.open .intervention-body{display:block;}
+.objective-block,.foods-block{background:var(--white);border-radius:var(--r-sm);padding:0.9rem 1rem;margin-top:0.45rem;border:1px solid rgba(54,54,54,0.06);}
+.objective-block h5,.foods-block h5{font-size:0.78rem;font-weight:600;margin-bottom:0.45rem;display:flex;align-items:center;gap:0.35rem;letter-spacing:0.03em;}
+.objective-block h5{color:#2E7D32;}
+.foods-block h5{color:var(--purple);}
+.objective-block p{font-size:0.83rem;color:var(--text-mid);}
+.foods-block ul{list-style:none;}
+.foods-block li{padding:0.3rem 0;font-size:0.82rem;color:var(--text-mid);border-bottom:1px solid rgba(54,54,54,0.04);padding-left:1rem;position:relative;}
+.foods-block li::before{content:'·';position:absolute;left:0;color:var(--lime);font-weight:900;font-size:1.2rem;line-height:1.2;}
+.foods-block li:last-child{border-bottom:none;}
+.avoid-block,.protocol-block{border-radius:var(--r-sm);padding:0.7rem 0.9rem;margin-top:0.45rem;font-size:0.81rem;}
+.avoid-block{background:rgba(198,80,0,0.06);color:#b04000;border-left:3px solid #e07000;}
+.protocol-block{background:rgba(167,102,154,0.07);color:var(--purple);border-left:3px solid var(--purple);}
+.conflicts-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(198,40,40,0.18);}
+.conflicts-intro{padding:1rem 1.4rem;background:rgba(198,40,40,0.05);font-size:0.83rem;color:var(--dark);border-bottom:1px solid rgba(198,40,40,0.1);}
+.conflict-item{display:flex;gap:0.9rem;align-items:flex-start;padding:1rem 1.4rem;border-bottom:1px solid rgba(54,54,54,0.06);}
+.conflict-item:last-child{border-bottom:none;}
+.conflict-icon{font-size:1.4rem;flex-shrink:0;margin-top:0.1rem;}
+.conflict-body{flex:1;}
+.conflict-title{font-weight:700;font-size:0.87rem;color:#c62828;margin-bottom:0.3rem;font-family:'KOHO',sans-serif;}
+.conflict-detail{font-size:0.82rem;color:var(--dark);line-height:1.5;margin-bottom:0.4rem;}
+.conflict-tag{display:inline-block;padding:0.1rem 0.5rem;border-radius:8px;font-size:0.75rem;font-weight:600;}
+.conflict-tag.inc{background:rgba(212,234,124,0.32);color:#2a5000;}
+.conflict-tag.dec{background:rgba(167,102,154,0.14);color:var(--purple);}
+.conflict-suggestion{font-size:0.79rem;color:var(--text-mid);background:rgba(212,234,124,0.12);border-left:3px solid var(--lime);padding:0.5rem 0.75rem;border-radius:0 var(--r-sm) var(--r-sm) 0;line-height:1.5;}
+.conflict-item--tension{opacity:0.82;}
+.conflict-tipo-badge{display:inline-block;font-size:0.64rem;font-weight:700;padding:0.08rem 0.45rem;border-radius:6px;letter-spacing:0.06em;text-transform:uppercase;margin-right:0.35rem;vertical-align:middle;}
+.conflict-tipo-badge.conflicto{background:rgba(198,40,40,0.12);color:#c62828;}
+.conflict-tipo-badge.tension{background:rgba(167,102,154,0.12);color:var(--purple);}
+.conflict-eje{font-size:0.75rem;color:var(--text-mid);font-style:italic;}
+.eje-chip{display:inline-block;background:rgba(54,54,54,0.07);color:var(--text-mid);font-size:0.64rem;font-weight:600;padding:0.1rem 0.5rem;border-radius:8px;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.15rem;}
+.int-meta{margin-bottom:0.1rem;}
+.int-inds-label{font-size:0.7rem;color:var(--text-mid);}
+.ind-estado{font-size:0.72rem;color:var(--text-mid);font-weight:400;}
+.notes-card{background:var(--dark);color:var(--white);border-radius:var(--r);padding:1.75rem 2rem;margin-top:2rem;position:relative;overflow:hidden;}
+.notes-card .wave-deco{color:var(--lime);width:460px;bottom:-40px;right:-50px;opacity:0.05;}
+.notes-card h3{font-family:'KOHO',sans-serif;color:var(--lime);margin-bottom:1.1rem;font-size:1rem;letter-spacing:0.06em;}
+.note-item{display:flex;gap:0.7rem;margin-bottom:0.7rem;align-items:flex-start;position:relative;z-index:1;}
+.note-num{width:22px;height:22px;background:var(--lime);color:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;font-family:'KOHO';}
+.note-text{font-size:0.84rem;color:rgba(255,255,255,0.68);}
+.footer{background:var(--dark);text-align:center;padding:1.25rem;color:rgba(255,255,255,0.28);font-size:0.75rem;letter-spacing:0.05em;border-top:1px solid rgba(255,255,255,0.05);}
+.footer strong{color:var(--lime);font-family:'KOHO';font-weight:700;letter-spacing:0.12em;}
+@media(max-width:768px){.score-card{grid-template-columns:1fr;}.phase-header{flex-direction:column;gap:0.75rem;}}
+@media print{body{background:white;}.intervention-body{display:block !important;}.int-toggle{display:none;}}
+</style>
+</head>
+<body>
+<header class="header">
+  <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+  <img src="" alt="Enteria" class="header-logo">
+  <span class="kicker">Análisis de Microbiota Intestinal</span>
+  <h1>Reporte para profesionales</h1>
+  <p class="sub">Intervención Nutricional</p>
+  <div class="header-meta">
+    <span>👤 P1 </span>
+    <span>📅 30 de abril de 2026</span>
+    <span>⏱ Plan de 8 semanas</span>
+  </div>
+  
+</header>
+
+<div class="score-section">
+  <div class="score-card">
+    <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+    <div class="score-visual">
+      <div class="score-index-label has-tooltip tt-below"
+           data-tooltip="Score calculado integrando 39 indicadores microbianos con pesos clínicos diferenciados, en relación a una población de referencia sana.">
+        Índice de Salud de Microbiota
+      </div>
+      <div class="score-circle">
+        <div class="score-value">
+          <div class="score-num">64.2</div>
+          <div class="score-lbl">de 100</div>
+        </div>
+      </div>
+      <div class="score-badge">Moderado</div>
+      <div class="score-desc">Hay desequilibrios en áreas clave pero existe base funcional para recuperarse.</div>
+    </div>
+    <div class="score-details">
+      <h3 class="has-tooltip tt-left"
+          data-tooltip="Variables microbianas con valores fuera del rango óptimo. Son el foco del plan de intervención nutricional.">
+        Indicadores que requieren atención
+      </h3>
+      <div class="ind-group"><div class="ind-group-label">⚠ Patógenos detectados</div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Bacteroides fragilis</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor elevado respecto al rango saludable. El plan apunta a reducirlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div></div><div class="ind-group"><div class="ind-group-label">Bacterias</div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Akkermansia</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Proporción ligeramente baja respecto al equilibrio óptimo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Bajo</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Faecalibacterium</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor por debajo del rango saludable. El plan apunta a aumentarlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Bajo</span>
+        </div></div><div class="ind-group"><div class="ind-group-label">Marcadores funcionales</div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Diversidad microbiana</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor por debajo del rango saludable. El plan apunta a aumentarlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Bajo</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Bacteroidetes/Firmicutes</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Proporción ligeramente elevada respecto al equilibrio óptimo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Bacterias productoras SCFA</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor por debajo del rango saludable. El plan apunta a aumentarlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Bajo</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Metabolización lípidos</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor elevado respecto al rango saludable. El plan apunta a reducirlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Metabolización aminoácidos</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Proporción ligeramente elevada respecto al equilibrio óptimo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Metabolismo lactosa</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor elevado respecto al rango saludable. El plan apunta a reducirlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Bacterias proinflamatorias</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Valor elevado respecto al rango saludable. El plan apunta a reducirlo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Relación GABA</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Proporción ligeramente elevada respecto al equilibrio óptimo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div>
+        <div class="ind-item">
+          <div class="ind-dot" style="background:#a7669a"></div>
+          <span class="ind-name">Indol</span>
+          <span class="sev-pill has-tooltip" data-tooltip="Proporción ligeramente elevada respecto al equilibrio óptimo." style="background:#a7669a18;color:#a7669a;border:1px solid #a7669a35;">Alto</span>
+        </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- MATRIZ DE IMPACTO — sección oculta, no eliminar (contiene datos de intervención×indicador)
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(212,234,124,0.22);color:var(--dark);">🔬</div>
+      <div>
+        <span class="section-kicker">Análisis global</span>
+        <div class="section-title">Matriz de Impacto: Intervención ↔ Indicador</div>
+      </div>
+    </div>
+    <div class="matrix-card">
+      <div class="matrix-wrap">
+        <table class="impact-table">
+          <thead><tr><th>Intervención</th><th title="Akkermansia">Akkermansia</th><th title="Faecalibacterium">Faecalibacterium</th><th title="Bacteroides fragilis">fragilis</th><th title="Diversidad microbiana">microbiana</th><th title="Bacteroidetes/Firmicutes">Bacteroidetes/Firmicutes</th><th title="Bacterias productoras SCFA">SCFA</th><th title="Metabolización lípidos">lípidos</th><th title="Metabolización aminoácidos">aminoácidos</th><th title="Metabolismo lactosa">lactosa</th><th title="Bacterias proinflamatorias">proinflamatorias</th><th title="Relación GABA">Relación GABA</th><th title="Indol">Indol</th></tr></thead>
+          <tbody><tr><td class="action-cell"><span style="color:#2E7D32;font-weight:700;">↑</span> Induccion de Akkermansia mediante polifenoles, mucinas dieteticas y ayuno intermitente</td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#2E7D32;font-weight:700;">↑</span> Fibra fermentable especifica (pectina, arabinoxilanos) y patron mediterraneo para recuperar F. prausnitzii</td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Reduccion de B. fragilis enterotoxigenico mediante fibra soluble, acidos organicos y restriccion de azucares</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#2E7D32;font-weight:700;">↑</span> Dieta de alta variedad y policromía vegetal</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Modulación B/F: restaurar Firmicutes beneficiosos</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Modulación de microbiota lipídica: reducir grasa saturada y aumentar omega-3</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Reequilibrio de metabolismo de aminoácidos: reducir proteína animal y aumentar fibra</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Modulación de carga de lactosa: ajuste gradual según tolerancia y capacidad fermentativa</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Patrón dietético antiinflamatorio con énfasis en omega-3 y polifenoles</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Moderacion de la sobreproduccion de GABA microbiano: reequilibrar el eje intestino-cerebro inhibitorio</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td><td class="impact-cell none"></td></tr><tr><td class="action-cell"><span style="color:#c62828;font-weight:700;">↓</span> Moderacion del exceso de indol microbiano: reducir actividad triptofanasa bacteriana y toxicidad uremica potencial</td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell none"></td><td class="impact-cell high">✓✓</td></tr></tbody>
+        </table>
+      </div>
+      <div class="matrix-footer">
+        <span><strong style="color:#2E7D32">✓✓</strong> Alto impacto</span>
+        <span><strong style="color:var(--purple)">✓</strong> Impacto moderado</span>
+      </div>
+    </div>
+  </section>
+  -->
+
+  
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(212,234,124,0.22);color:var(--dark);">📆</div>
+      <div>
+        <span class="section-kicker">Plan estructurado</span>
+        <div class="section-title">Plan de Intervención por Fases</div>
+      </div>
+    </div>
+    
+        <div class="phase-card">
+          <div class="phase-header">
+            <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+            <div class="phase-title">
+              <div class="phase-num-badge">Fase 1</div>
+              <h3>Fundamentos</h3>
+              <div class="phase-period">30 de abril de 2026 — 13 de mayo de 2026</div>
+              <div class="phase-desc">Establecer la base nutricional</div>
+            </div>
+            <div class="phase-weeks">Semanas 1–2</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-objectives"><span class="obj-tag inc">↑ Fibra fermentable especifica (pectina, arabinoxilanos) y patron mediterraneo para recuperar F. prausnitzii</span><span class="obj-tag dec">↓ Reduccion de B. fragilis enterotoxigenico mediante fibra soluble, acidos organicos y restriccion de azucares</span><span class="obj-tag inc">↑ Dieta de alta variedad y policromía vegetal</span><span class="obj-tag dec">↓ Patrón dietético antiinflamatorio con énfasis en omega-3 y polifenoles</span></div>
+            
+            <div class="intervention inc">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🛡️</div>
+                <div class="int-info">
+                  <div class="int-name">↑ FIBRA FERMENTABLE ESPECIFICA (PECTINA, ARABINOXILANOS) Y PATRON MEDITERRANEO PARA RECUPERAR F. PRAUSNITZII </div>
+                  <div class="int-meta"><span class="eje-chip">Producción de AGCC</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Aborda 2 indicadores del eje:</span> <strong>Faecalibacterium <span class="ind-estado">(Bajo)</span> · Bacterias productoras SCFA <span class="ind-estado">(Bajo)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Faecalibacterium prausnitzii es el principal productor de butirato del colon y uno de los mayores indicadores de salud intestinal. Su disminucion es un marcador consistente de IBD, SII, obesidad e inflamacion cronica. Sokol et al. (PNAS, 2008) demostraron que F. prausnitzii ejerce efectos antiinflamatorios inhibiendo NF-kB mediante butirato y el peptido microbiano MAM. Martin et al. (Gut, 2017) mostraron que niveles bajos de F. prausnitzii predicen recaida en EII en remision. Scott et al. (ISME J, 2011) identificaron que FOS, pectina y arabinoxilanos son sustratos preferentes. Baxter et al. (Cell Host Microbe, 2019) demostraron en humanos que los cereales integrales ricos en arabinoxilanos aumentaron F. prausnitzii y la produccion de butirato fecal en 6 semanas. Benus et al. (2010) mostraron que la dieta alta en proteina animal reduce F. prausnitzii mientras que carbohidratos complejos la aumentan. ESPEN 2022 reconoce a F. prausnitzii como biomarcador de remision inflamatoria intestinal.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li>Sustratos fermentables preferidos de F. prausnitzii</li><li><strong>Achicoria (raiz):</strong> 3-4g inulina/100g. Mayor fuente natural de inulina/FOS. Incluir en ensaladas o como infusion.</li><li><strong>Puerro (parte verde y blanca):</strong> 80-100g, 2-3x/sem. FOS + polifenoles.</li><li><strong>Esparragos:</strong> 6-8 tallos, 3x/sem. Inulina + asparagina.</li><li><strong>Manzana con piel:</strong> 1-2/dia. Pectina de alto metoxilo = sustrato clave de F. prausnitzii.</li><li><strong>Zanahoria cruda o al dente:</strong> 1 mediana/dia. Pectina + arabinogalactanos.</li><li><strong>Okra/quimbombo:</strong> 80-100g, 2x/sem. Mucilagos ricos en arabinogalactanos.</li><li><strong>Pan de centeno integral 100%:</strong> 2-3 rebanadas/dia. Mayor concentracion de arabinoxilanos.</li><li><strong>Cebada integral:</strong> 50-60g cocida, 3-4x/sem. Beta-glucanos + arabinoxilanos.</li><li><strong>Avena laminada:</strong> 60-80g/dia. Beta-glucanos de alta viscosidad.</li><li>AOVE (20-30ml/dia crudo), verduras variadas diarias, legumbres 4x/sem.</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Proteina animal en exceso: especialmente carne roja y procesada. Correlacion negativa directa con F. prausnitzii (Benus et al., 2010).
+Azucares simples y dieta baja en fibra: desplazan la microbiota butirogena en favor de Proteobacterias.
+Antibioticos: F. prausnitzii es altamente sensible. Critico tras tratamientos con fluoroquinolonas o metronidazol.
+Dieta cetogenica estricta: la restriccion severa de carbohidratos elimina los sustratos fermentables (Ang et al., Cell, 2020).
+Emulsionantes industriales (carboximetilcelulosa, polisorbato-80): reducen F. prausnitzii (Viennois et al., Cancer Res, 2017).</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Sem. 1 - Base prebiوtica: incorporar 2-3 fuentes de fibra fermentable diariamente. Priorizar pectinas (manzana, zanahoria) por menor riesgo de flatulencia inicial. Avena de desayuno como base diaria.
+
+Sem. 2-3 - Escalada gradual: anadir esparragos o puerro 3x/sem. Introducir pan de centeno o cebada 3x/sem. Si hay tolerancia, achicoria 1x/sem. Objetivo: >=20g/dia de fibra prebiotic total.
+
+Sem. 4-6 - Consolidacion antiinflamatoria: implementar patron mediterraneo completo. Pescado azul 2-3x/sem (omega-3 potencia el efecto antiinflamatorio). Polifenoles diarios (AOVE + frutos rojos). Reducir proteina animal roja a <=2x/sem.
+
+Seguimiento: F. prausnitzii como biomarcador de control; niveles bajos persistentes sugieren inflamacion subyacente activa. Actividad fisica moderada tambien aumenta F. prausnitzii (Durk et al., Med Sci Sports Exerc, 2019).</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">⚠️</div>
+                <div class="int-info">
+                  <div class="int-name">↓ REDUCCION DE B. FRAGILIS ENTEROTOXIGENICO MEDIANTE FIBRA SOLUBLE, ACIDOS ORGANICOS Y RESTRICCION DE AZUCARES </div>
+                  <div class="int-meta"><span class="eje-chip">Patógenos Detectados</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Bacteroides fragilis <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-alta has-tooltip" data-tooltip="Implica eliminar alimentos arraigados. Requiere mayor motivación.">Cambio de hábito mayor</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Bacteroides fragilis en su cepa enterotoxigenica (ETBF, que produce BFT - Bacteroides fragilis toxin) se asocia a enfermedad inflamatoria intestinal, cancer colorrectal y diarrea inflamatoria. Wu et al. (Nature Medicine, 2004) describieron que BFT activa NF-kB y promueve la proliferacion epitelial neoplasica. Bhatt et al. (Cell Host Microbe, 2017) mostraron que ETBF promueve el carcinoma colorrectal mediante activacion de STAT3. La distincion critica es que B. fragilis no enterotoxigenico es comensal beneficioso; solo la cepa ETBF requiere intervencion. Plummer et al. (J Clin Microbiol, 2020) identificaron que una dieta alta en azucares y baja en fibra favorece la expansion de ETBF al reducir la competencia de generos beneficiosos. Singh et al. (Cell Host Microbe, 2014) demostraron que la fibra soluble y los acidos grasos de cadena corta (AGCC) reducen el pH colonico desfavoreciendo la expansion de Bacteroides patogenicos. Las guias de la IDSA (Infectious Diseases Society of America) 2023 sobre infecciones gastrointestinales bacterianas recomiendan como primera linea dietética la restriccion de azucares simples y el aumento de fibra soluble fermentable.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li>Fibra soluble y prebiOtica (competencia ecologica contra ETBF)</li><li><strong>Psyllium (Plantago ovata):</strong> 5-10g/dia con abundante agua. Reduce pH colonico y promueve AGCC inhibitorios.</li><li><strong>Pectinas (manzana, zanahoria, citricos):</strong> 1-2 manzanas/dia con piel + zanahoria cruda diaria.</li><li><strong>Inulina (achicoria, esparragos):</strong> estimula generos competidores beneficiosos.</li><li><strong>Avena laminada (60-80g/dia):</strong> beta-glucanos de alta viscosidad.</li><li><strong>Vinagre de manzana no pasteurizado:</strong> 1-2 cucharadas diluidas en agua antes de comer.</li><li><strong>Kefir de leche o agua (200ml/dia):</strong> acidos lactico y acetico reducen pH del entorno.</li><li><strong>Yogur con bacterias activas (150-200g/dia):</strong> competencia directa y reduccion de pH.</li><li><strong>Te verde (2-3 tazas/dia):</strong> EGCG con actividad inhibitoria sobre Bacteroides patogenicos.</li><li><strong>Arandanos (100-150g/dia):</strong> proantocianidinas con actividad antibiofilm.</li><li><strong>Granada/zumo 100% (100g/150ml dia):</strong> punicalaginas con efecto antimicrobiano intestinal.</li><li><strong>Cacao amargo >=85% (20-30g/dia):</strong> polifenoles con accion selectiva.</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Azucares simples y ultraprocesados: glucosa y fructosa libre son sustratos preferentes de expansion de Bacteroides. Especialmente JMAF (jarabe de maiz de alta fructosa), bebidas azucaradas, bolleria.
+Grasas saturadas en exceso de origen industrial: patron pro-ETBF (dieta occidental alta en grasa saturada expande la familia Bacteroidaceae patogenica).
+Alcohol: dano de la barrera intestinal que facilita la translocalcion de BFT.
+Dieta baja en fibra: elimina la competencia ecologica de generos beneficiosos contra Bacteroides patogenicos.
+Carnes rojas en exceso: la grasa de la carne roja favorece la expansion de ETBF y el perfil inflamatorio asociado (Bhatt et al., Cell Host Microbe, 2017).</div><div class="protocol-block">📋 <strong>Protocolo:</strong> IMPORTANTE: Si se detecta B. fragilis enterotoxigenico (ETBF) a nivel clinico, la intervencion dietética es complementaria a la evaluacion medica. Derivar siempre a gastroenterologia.
+
+Fase 1 - Reduccion del sustrato (sem. 1-3): eliminar azucares simples y ultraprocesados que expanden ETBF. Incorporar psyllium 5g/dia. Iniciar kefir o yogur activo diario.
+
+Fase 2 - Competencia ecologica (sem. 4-8): aumentar psyllium a 10g/dia si se tolera. Anadir pectinas y inulina. Instaurar patron diario de polifenoles (te verde + arandanos). Vinagre de manzana 1 cucharada/dia.
+
+Fase 3 - Consolidacion del microbioma protector (sem. 8-12): mantener el patron hasta nueva evaluacion de microbioma. Asegurar >25g/dia de fibra total.
+
+Nota clinica: B. fragilis no-ETBF (comensal) es un colaborador util en la tolerancia inmune; esta intervencion aplica solo cuando el informe de microbioma especifica la variante toxigenica o elevacion clinicamente relevante.</div>
+              </div>
+            </div>
+            <div class="intervention inc">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🌈</div>
+                <div class="int-info">
+                  <div class="int-name">↑ DIETA DE ALTA VARIEDAD Y POLICROMÍA VEGETAL </div>
+                  <div class="int-meta"><span class="eje-chip">Diversidad Microbiana</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Diversidad microbiana <span class="ind-estado">(Bajo)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>La diversidad alfa microbiana se correlaciona positivamente con el consumo variado de alimentos de origen vegetal (Lozupone et al., Nat Rev Microbiol, 2012). Wastyk et al. (Cell, 2021) demostraron en un ensayo controlado aleatorizado que una dieta alta en fermentados incrementa la diversidad microbiana significativamente frente a dieta alta en fibra aislada. La pérdida de diversidad microbiana se asocia con mayor susceptibilidad a enfermedades metabólicas e inflamatorias crónicas.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Verduras de hoja verde (espinaca, rúcula, acelga):</strong> diariamente, rotar variedades</li><li><strong>Legumbres (lentejas, garbanzos, porotos, edamame):</strong> 3-4 veces/semana, alternar especies</li><li><strong>Frutas de estación:</strong> 2-3 porciones/día, diversificar colores</li><li><strong>Fermentados naturales (kéfir, yogur natural sin azúcar, chucrut, kimchi):</strong> 1 porción/día</li><li><strong>Cereales integrales variados (avena, cebada, centeno, quínoa):</strong> alternar diariamente</li><li><strong>Frutos secos y semillas (nueces, almendras, semillas de lino, chía):</strong> 1 puñado/día, rotar tipos</li><li><strong>Hierbas y especias frescas/secas:</strong> incorporar 5+ variedades/semana</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Dietas monótonas y ultraprocesados; antibióticos sin indicación estricta (reducen diversidad agudamente)</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Implementar el principio de '30 plantas distintas por semana' (Sonnenburg & Sonnenburg, 2019): registrar variedades distintas de frutas, verduras, legumbres, cereales integrales, frutos secos, semillas, hierbas y especias. Comenzar con 15 plantas/semana e incrementar 2-3 por semana hasta alcanzar el objetivo. Cada variedad cuenta independientemente del volumen consumido.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🔥</div>
+                <div class="int-info">
+                  <div class="int-name">↓ PATRÓN DIETÉTICO ANTIINFLAMATORIO CON ÉNFASIS EN OMEGA-3 Y POLIFENOLES </div>
+                  <div class="int-meta"><span class="eje-chip">Inflamación Intestinal</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Bacterias proinflamatorias <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>La elevación de bacterias con perfil proinflamatorio (p. ej. Proteobacterias, productoras de LPS) se asocia a mayor permeabilidad intestinal y activación de NF-κB. Calder et al. (Nutrients, 2020) revisaron la evidencia sobre omega-3 y modulación de la inflamación intestinal, demostrando reducción de IL-6, TNF-α y PCR. El patrón mediterráneo reduce marcadores inflamatorios sistémicos (Estruch et al., NEJM, 2018, estudio PREDIMED). Zmora et al. (Cell, 2018) mostraron que la dieta de alta fibra y alimentos fermentados modifica la composición microbiana reduciendo géneros proinflamatorios. La guía ESPEN 2022 para enfermedad inflamatoria intestinal recomienda dieta mediterránea como patrón antiinflamatorio de base.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Ácidos grasos omega-3 (EPA/DHA):</strong> salmón salvaje (150-200g, 2-3x/sem), sardinas en conserva en aceite de oliva (100g, 2-3x/sem), caballa (150g, 2x/sem), arenque (100g, 2x/sem). ALA: nueces (30g/día, 7 nueces), semillas de lino molidas (15g/día, 1 cucharada), semillas de chía (15g/día). Polifenoles: aceite de oliva virgen extra (20-30ml/día crudo), arándanos (100-150g/día), granada (100g/día o zumo sin azúcar 150ml), cúrcuma (1 cucharadita + pimienta negra para absorción), jengibre fresco (5-10g/día), té verde (2-3 tazas/día). Verduras crucíferas: brócoli (150g, 4x/sem), col kale (80g, 3x/sem), espinacas (150g crudas, diario). Fibra prebiótica antiinflamatoria: ajo (con moderación, 1-2 dientes/día si se tolera), espárragos (6 tallos, 3x/sem), alcachofa (1-2 piezas, 2x/sem).</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Carne roja procesada: embutidos, salchichas, bacon (evitar o limitar a <50g/sem si se consume).
+Carne roja no procesada: limitar a 1-2x/semana máximo (evidencia de activación de la inflamación intestinal por el grupo hemo y metabolitos como TMAO).
+Aceites omega-6 en exceso: girasol, maíz, soja refinados como uso principal (desbalance omega-6/omega-3).
+Azúcares añadidos y productos ultraprocesados: galletas, bollería, refrescos azucarados, cereales azucarados de desayuno.
+Alcohol: especialmente en exceso (>2 unidades/día); el vino tinto moderado (1 copa/día) tiene evidencia equívoca.
+Grasas trans artificiales: margarinas sólidas, productos con aceites parcialmente hidrogenados.</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Fase 1 — Transición (semanas 1-2): reemplazar proteínas animales inflamatorias por pescado azul y legumbres. Incorporar AOVE como grasa principal. Añadir una ración diaria de verduras de hoja verde.
+Fase 2 — Consolidación (semanas 3-6): implementar patrón mediterráneo completo. Incorporar 30-50g de frutos secos diarios. Asegurar 2-3 raciones de pescado azul/semana. Añadir especias antiinflamatorias (cúrcuma, jengibre) en la cocción habitual.
+Fase 3 — Mantenimiento: control trimestral de marcadores inflamatorios (PCR, IL-6 si disponibles). El patrón debe mantenerse como estilo de vida. Actividad física moderada (≥150 min/sem aeróbico) potencia el efecto antiinflamatorio.
+Cocción: preferir vapor, horno, plancha. Evitar frituras y temperaturas >180°C con aceites poliinsaturados (oxidación lipídica).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-header">
+            <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+            <div class="phase-title">
+              <div class="phase-num-badge">Fase 2</div>
+              <h3>Consolidación</h3>
+              <div class="phase-period">14 de mayo de 2026 — 27 de mayo de 2026</div>
+              <div class="phase-desc">Reducir factores negativos y reforzar hábitos</div>
+            </div>
+            <div class="phase-weeks">Semanas 3–4</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-objectives"><span class="obj-tag inc">↑ Induccion de Akkermansia mediante polifenoles, mucinas dieteticas y ayuno intermitente</span><span class="obj-tag dec">↓ Modulación B/F: restaurar Firmicutes beneficiosos</span><span class="obj-tag dec">↓ Modulación de microbiota lipídica: reducir grasa saturada y aumentar omega-3</span><span class="obj-tag dec">↓ Reequilibrio de metabolismo de aminoácidos: reducir proteína animal y aumentar fibra</span></div>
+            
+            <div class="intervention inc">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🧬</div>
+                <div class="int-info">
+                  <div class="int-name">↑ INDUCCION DE AKKERMANSIA MEDIANTE POLIFENOLES, MUCINAS DIETETICAS Y AYUNO INTERMITENTE </div>
+                  <div class="int-meta"><span class="eje-chip">Barrera Mucosa (Akkermansia)</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Akkermansia <span class="ind-estado">(Bajo)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Akkermansia muciniphila coloniza la capa de moco intestinal y su baja abundancia se asocia con obesidad, resistencia a insulina e inflamacion sistemica. Depommier et al. (Nature Medicine, 2019) realizaron el primer ensayo clinico en humanos con Akkermansia pasteurizada (10^10 UFC/dia durante 3 meses): mejoro insulinorresistencia y redujo LPS y IL-6. Plovier et al. (Nature Medicine, 2017) identificaron la proteina Amuc_1100 de su membrana como mediador del efecto de barrera intestinal. Etxeberria et al. (J Nutr Biochem, 2015) mostraron que resveratrol y quercetina aumentan Akkermansia en modelos de alto contenido graso. Anhe et al. (Gut, 2015) demostraron que las proantocianidinas tipo A del cranberry (PAC-A) elevan significativamente Akkermansia. Scheiman et al. (Nature Medicine, 2019) encontraron que el ejercicio aerobico moderado aumenta Akkermansia. El ayuno intermitente (Li et al., Cell Research, 2022) expande el nicho mucoso disponible al reducir la llegada continua de sustratos competidores.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li>Polifenoles promotores de Akkermansia</li><li><strong>Arandanos rojos/cranberry:</strong> 100-150g frescos o 30g secos sin azucar/dia. Proantocianidinas tipo A (PAC-A) son los mas activos.</li><li><strong>Arandanos azules (blueberry):</strong> 100-150g/dia. Antocianinas + resveratrol.</li><li><strong>Uvas rojas con piel:</strong> 150g/dia. Fuente directa de resveratrol y quercetina.</li><li><strong>Granada (granos o zumo 100% puro):</strong> 100g o 150ml/dia. Punicalaginas que se convierten en urolitinas moduladoras.</li><li><strong>Te verde matcha:</strong> 1-2 tazas/dia. EGCG activo sobre Akkermansia.</li><li><strong>Cacao amargo >=85%:</strong> 20-30g/dia. Flavanoles de cacao con efecto bifidogenico y promotor de Akkermansia.</li><li><strong>Caldo de huesos (coccion 12-24h):</strong> 200-300ml/dia. Colageno tipo II, glicina y prolina como precursores de mucinas.</li><li><strong>Gelatina sin sabor:</strong> 10-15g/dia hidratada.</li><li><strong>Aloe vera gel interior puro:</strong> 30-50ml/dia. Acemanano como sustrato mucoadherente.</li><li><strong>Manzana con piel:</strong> 1-2/dia.</li><li><strong>Zanahoria cruda:</strong> 1 mediana/dia.</li><li><strong>Remolacha:</strong> 80-100g, 3-4x/sem.</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Azucares anadidos y ultraprocesados: reducen el grosor de la capa mucosa y desplazan a Akkermansia. Especialmente fructosa libre (bebidas azucaradas, siropes) y emulsionantes (carboximetilcelulosa CMC, polisorbato-80) presentes en helados y margarinas industriales (Chassaing et al., Nature, 2015).
+Dieta alta en grasas saturadas industriales: disminuye Akkermansia (Cani et al., Diabetes, 2008). Diferenciar de AOVE.
+Antibioticos de amplio espectro: Akkermansia es altamente sensible. Reforzar protocolo post-antibiotico.
+Alcohol en exceso: dano directo a la capa de moco intestinal y reduccion del nicho de Akkermansia.</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Fase 1 - Enriquecimiento polifenolico (sem. 1-3): incorporar diariamente 2 fuentes de la lista (cranberry + arandano azul, o granada + cacao). Anadir caldo de huesos o colageno/gelatina. Establecer ventana alimentaria de 12h para ayuno nocturno (ej. 7am-7pm).
+
+Fase 2 - Consolidacion metabolica (sem. 4-8): si el profesional lo indica, protocolo de ayuno intermitente 16:8 (3-4 dias/semana). Mantener hidratacion optima. Incluir pectinas diariamente. Reducir ultraprocesados y emulsionantes industriales que erosionan la capa de moco.
+
+Fase 3 - Mantenimiento (sem. 8+): el patron se sostiene como habito. Actividad fisica aerobica moderada (150 min/sem) potencia el efecto. Evitar antibioticos innecesarios. Control de IMC y glucemia como variables proxy de abundancia de Akkermansia.
+
+Nota clinica: Akkermansia pasteurizada esta disponible comercialmente en algunos mercados; su uso debe ser indicado por el profesional de salud.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">⚖️</div>
+                <div class="int-info">
+                  <div class="int-name">↓ MODULACIÓN B/F: RESTAURAR FIRMICUTES BENEFICIOSOS </div>
+                  <div class="int-meta"><span class="eje-chip">Balance Bacteroidetes/Firmicutes</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Bacteroidetes/Firmicutes <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-alta has-tooltip" data-tooltip="Implica eliminar alimentos arraigados. Requiere mayor motivación.">Cambio de hábito mayor</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Un ratio B/F elevado se observa en enfermedad inflamatoria intestinal (IBD), donde la reducción de Firmicutes comensales beneficiosos (especialmente Faecalibacterium prausnitzii y Roseburia) compromete la integridad de la barrera intestinal y la producción de butirato (Stojanov et al., Microorganisms, 2020). Algunos Bacteroides en exceso generan LPS y endotoxinas proinflamatorias. La intervención busca modular el exceso de Bacteroidetes y restaurar Firmicutes beneficiosos mediante probióticos y fibra fermentable específica.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Fermentados con Lactobacillus documentados (yogur natural entero, kéfir de leche o agua):</strong> 1-2 porciones/día</li><li><strong>Psyllium:</strong> 5-10g/día en vaso de agua (fibra viscosa, favorece Firmicutes beneficiosos)</li><li><strong>Plátano/banana maduro (almidón resistente tipo 2):</strong> 1 unidad/día</li><li><strong>Avena remojada overnight (beta-glucanos):</strong> 60-80g/día</li><li><strong>Ajo y cebolla cocidos (FOS moderados, menor efecto fermentativo):</strong> 3-4 veces/semana</li><li><strong>Papa enfriada o arroz frío (almidón resistente tipo 3):</strong> 1-2 veces/semana</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Fibra insoluble en exceso durante fase inflamatoria activa; azúcares simples que amplifican fermentación bacteriana no selectiva; dieta muy baja en carbohidratos que prive de sustratos a Firmicutes beneficiosos</div><div class="protocol-block">📋 <strong>Protocolo:</strong> En contexto de IBD o disbiosis inflamatoria, introducir cambios de forma gradual. Priorizar fermentados con cepas Lactobacillus y Bifidobacterium documentadas. Introducir fibra viscosa antes que insoluble. Evaluar tolerancia individual a FODMAP si hay síntomas digestivos activos. Implementar en 4-6 semanas progresivas.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🫀</div>
+                <div class="int-info">
+                  <div class="int-name">↓ MODULACIÓN DE MICROBIOTA LIPÍDICA: REDUCIR GRASA SATURADA Y AUMENTAR OMEGA-3 </div>
+                  <div class="int-meta"><span class="eje-chip">Metabolismo Lipídico</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Metabolización lípidos <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Un nivel elevado de bacterias especializadas en metabolización de lípidos puede reflejar una dieta alta en grasas, especialmente saturadas, y asociarse a mayor producción de ácidos biliares secundarios proinflamatorios y alteraciones metabólicas. Lu et al. (Med, 2024) demostraron en un RCT en pacientes con DM2 e hipertrigliceridemia que la suplementación con omega-3 modula la microbiota lipídica y mejora el perfil lipídico; la respuesta se predice por la composición microbiana basal. Costantini et al. (Int J Mol Sci, 2017) revisaron que los omega-3 incrementan Bifidobacterium y Lactobacillus y reducen Enterobacteriaceae en humanos. Los polifenoles modulan el metabolismo lipídico microbiano vía AMPK y modulación de composición bacteriana (Amiот et al., Obes Rev, 2016).</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Pescado azul (sardina, caballa, salmón, trucha):</strong> 3-4 veces/semana (EPA/DHA omega-3)</li><li><strong>Semillas de lino molidas:</strong> 15-20g/día (ALA omega-3)</li><li><strong>Semillas de chía:</strong> 20-25g/día</li><li><strong>Nueces:</strong> 30g/día (ALA + polifenoles)</li><li><strong>Aceite de oliva extra virgen:</strong> 2-3 cucharadas/día (ácido oleico, polifenoles)</li><li><strong>Aguacate/palta:</strong> 1/2 unidad/día (grasas monoinsaturadas)</li><li><strong>Arándanos, frambuesas, moras:</strong> 100-150g/día (polifenoles que modulan microbiota lipídica)</li><li><strong>Té verde:</strong> 2-3 tazas/día (catequinas)</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Grasas saturadas en exceso (carnes grasas, embutidos, mantequilla, aceite de palma); grasas trans (margarinas, ultraprocesados); omega-6 en exceso sin compensar con omega-3; alcohol</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Reducir grasas saturadas (carnes rojas, lácteos enteros, mantequilla, aceite de coco) al 10% del aporte calórico total. Eliminar grasas trans. Incrementar proporción omega-3/omega-6: objetivo ratio ≤ 1:4. Introducir fuentes de polifenoles vegetales diariamente. Evaluar a 8-12 semanas con perfil lipídico y síntomas clínicos.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🔬</div>
+                <div class="int-info">
+                  <div class="int-name">↓ REEQUILIBRIO DE METABOLISMO DE AMINOÁCIDOS: REDUCIR PROTEÍNA ANIMAL Y AUMENTAR FIBRA </div>
+                  <div class="int-meta"><span class="eje-chip">Metabolismo de Aminoácidos</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Metabolización aminoácidos <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Un nivel elevado de bacterias metabolizadoras de aminoácidos refleja alta fermentación proteica colónica, con producción de aminas biogénicas, amoníaco y compuestos nitrogenados potencialmente tóxicos. Windey et al. (PMC, 2012) establecen que la fermentación de aminoácidos aromáticos (tirosina → fenol/p-cresol; triptófano → indol/escatol) ocurre principalmente en colon distal y se amplifica con dieta alta en proteína animal. Humphreys et al. (PMC, 2022) demostraron que los prebióticos reducen BCFA y amoníaco fecales. La proteína de leguminosas produce significativamente menos BCFA que la caseína (Coucke et al., J Food Sci Nutr, 2023).</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Legumbres variadas (lentejas, garbanzos, porotos negros, edamame):</strong> 4-5 veces/semana en reemplazo parcial de proteína animal</li><li><strong>Tofu firme:</strong> 100-150g, 3 veces/semana</li><li><strong>Inulina (tupinambo, achicoria, ajo, puerro):</strong> diariamente (reduce p-cresol fecal)</li><li><strong>Avena:</strong> 60-80g/día (beta-glucanos bajan pH colónico e inhiben enzimas proteolíticas)</li><li><strong>Vegetales de hoja verde y crucíferas:</strong> 300-400g/día</li><li><strong>Frutas ricas en pectina (manzana, pera con piel):</strong> 2 unidades/día</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Carne roja en exceso (>2 veces/semana); carne procesada; dieta hiperproteica sin fibra compensatoria; suplementos proteicos animales en exceso</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Reducir proteína animal total al 15-20% del aporte calórico. Reemplazar al menos el 50% de las proteínas animales por proteínas vegetales con fibra adjunta. Incrementar fibra total hasta 30-35g/día para aumentar fermentación sacaolítica y bajar el pH colónico, inhibiendo enzimas proteolíticas (óptimas a pH neutro). Evaluar a 6-8 semanas.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phase-card">
+          <div class="phase-header">
+            <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+            <div class="phase-title">
+              <div class="phase-num-badge">Fase 3</div>
+              <h3>Optimización</h3>
+              <div class="phase-period">28 de mayo de 2026 — 10 de junio de 2026</div>
+              <div class="phase-desc">Afinar el perfil microbiano</div>
+            </div>
+            <div class="phase-weeks">Semanas 5–6</div>
+          </div>
+          <div class="phase-body">
+            <div class="phase-objectives"><span class="obj-tag dec">↓ Modulación de carga de lactosa: ajuste gradual según tolerancia y capacidad fermentativa</span><span class="obj-tag dec">↓ Moderacion de la sobreproduccion de GABA microbiano: reequilibrar el eje intestino-cerebro inhibitorio</span><span class="obj-tag dec">↓ Moderacion del exceso de indol microbiano: reducir actividad triptofanasa bacteriana y toxicidad uremica potencial</span></div>
+            
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🥛</div>
+                <div class="int-info">
+                  <div class="int-name">↓ MODULACIÓN DE CARGA DE LACTOSA: AJUSTE GRADUAL SEGÚN TOLERANCIA Y CAPACIDAD FERMENTATIVA </div>
+                  <div class="int-meta"><span class="eje-chip">Metabolismo de Lactosa</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Metabolismo lactosa <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Un nivel elevado de bacterias metabolizadoras de lactosa en colon indica que cantidad significativa de lactosa llega al colon sin ser absorbida en intestino delgado, lo cual es el mecanismo de la intolerancia a la lactosa. JanssenDuijghuijsen et al. (Am J Clin Nutr, 2024) en un ensayo de 12 semanas en 25 adultos con LNP-genotipo mostraron que la exposición gradual a dosis crecientes de lactosa incrementa Bifidobacterium significativamente (p=0.009) y mejora la tolerancia. Davis et al. (PNAS, 2016) demostraron que los GOS (galacto-oligosacáridos) producen respuesta bifidogénica en el 90% de los tratados y mejoran tolerancia a la lactosa. La microbiota es adaptable: la exposición continua mejora la tolerancia individual.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Yogur natural y kéfir (fermentación reduce lactosa en ~30-40%):</strong> iniciar con 100g/día</li><li><strong>Quesos curados y madurados (Parmesano, Cheddar curado, Manchego):</strong> menor lactosa, 30-50g/día</li><li>Mantequilla (trazas de lactosa)</li><li><strong>Leche sin lactosa o de origen vegetal (avena, almendra, soja):</strong> como alternativas base</li><li><strong>GOS (galacto-oligosacáridos):</strong> si disponibles como suplemento (prebiótico adaptador)</li><li><strong>Kéfir de agua:</strong> sin lactosa, probiótico alternativo</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Grandes cantidades de leche entera de una sola vez en pacientes con baja tolerancia (>250ml en ayunas); leche desnatada (peor tolerada que entera); productos lácteos procesados ricos en lactosa oculta (pan lactal, salsas)</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Protocolo de adaptación progresiva: comenzar con productos fermentados (yogur, kéfir) que contienen lactosa parcialmente predigerida. Si hay síntomas: reducir la carga de lactosa total a <12g/día (equivalente a 1 vaso de leche) y repartir entre las comidas. Introducción gradual de pequeñas cantidades puede mejorar tolerancia por adaptación microbiana. En intolerancia severa: optar por lácteos sin lactosa o bebidas vegetales enriquecidas en calcio.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🧠</div>
+                <div class="int-info">
+                  <div class="int-name">↓ MODERACION DE LA SOBREPRODUCCION DE GABA MICROBIANO: REEQUILIBRAR EL EJE INTESTINO-CEREBRO INHIBITORIO </div>
+                  <div class="int-meta"><span class="eje-chip">Neurotransmisión GABA</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Relación GABA <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-baja has-tooltip" data-tooltip="Cambio simple sin alterar significativamente los hábitos actuales.">Fácil de adoptar</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>Relacion GABA microbiana muy elevada indica sobrecrecimiento de bacterias GAD-activas (Lactobacillus brevis, L. rhamnosus, L. helveticus, Bifidobacterium dentium). Si bien el GABA fisiologico es beneficioso, su exceso puede resultar en inhibicion excesiva del sistema nervioso autonomo via nervio vago: fatiga, somnolencia diurna, ralentizacion del transito intestinal. Barrett et al. (Nutrients, 2019) advierten sobre modulacion excesiva del eje HPA por GABA microbiano en exceso. Estrategia: reducir sustratos de glutamato libre y espaciar fermentados GABA-activos.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Moderar queso parmesano a 10-15g/dia (de 20-30g):</strong> muy concentrado en glutamato libre, precursor directo de GABA via GAD</li><li>Reducir alga kombu/dashi a 2-3x/sem (de diario)</li><li>Moderar pasta de tomate a 50g/dia</li><li>Moderar salsa de soja a 1 cucharadita/dia maxima</li><li><strong>Kefir:</strong> reducir a 100ml/dia o dia por medio</li><li><strong>Kimchi:</strong> de diario a 3-4x/sem</li><li><strong>Miso:</strong> de diario a 3-4x/sem</li><li><strong>Arabinoxilanos:</strong> pan de centeno, cebada (favorecen Roseburia/Faecalibacterium como contrapeso al dominio Lactobacillus GAD-activos)</li><li><strong>Almidon resistente:</strong> banana verde, patata enfriada (diversifica hacia Ruminococcus, no GAD-activo)</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Suplementos de L-glutamina en dosis altas (>5g/dia): amplifica produccion de GABA; fermentados GABA-activos en todas las comidas simultaneamente; suplementos directos de GABA</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Sem. 1-4: Reducir glutamato libre a la mitad (moderar parmesano, kombu, pasta de tomate). Espaciar fermentados GABA-activos a dias alternos. Incorporar cereales integrales con arabinoxilanos.
+Sem. 5-8: Mantener algunos fermentados (kefir 3-4x/sem, miso 3x/sem) sin saturar sustrato de glutamato. Evaluar mejoria en energia diurna si estaba afectada.</div>
+              </div>
+            </div>
+            <div class="intervention dec">
+              <div class="intervention-header" onclick="toggleIntervention(this)">
+                <div class="int-icon">🥦</div>
+                <div class="int-info">
+                  <div class="int-name">↓ MODERACION DEL EXCESO DE INDOL MICROBIANO: REDUCIR ACTIVIDAD TRIPTOFANASA BACTERIANA Y TOXICIDAD UREMICA POTENCIAL </div>
+                  <div class="int-meta"><span class="eje-chip">Eje Indol (Tóxico/Urémico)</span></div>
+                  <div class="int-indicators"><span class="int-inds-label">Indicador:</span> <strong>Indol <span class="ind-estado">(Alto)</span></strong></div>
+                </div>
+                <span class="diff-badge diff-media has-tooltip" data-tooltip="Requiere reorganizar compra y preparación de alimentos.">Requiere planificación</span>
+                <div class="int-toggle">▼</div>
+              </div>
+              <div class="intervention-body">
+                <div class="objective-block">
+                  <h5>🎯 Objetivo Clínico</h5>
+                  <p>El exceso de indol genera acumulacion de sulfato de indoxilo (IS), toxina uremica identificada por Vanholder et al. (Kidney Int, 2011) como una de las mas relevantes derivadas de la microbiota; su acumulacion en ERC correlaciona con progresion y mortalidad cardiovascular (Mafra et al., J Am Soc Nephrol, 2021). La fuente: sobrecrecimiento de bacterias triptofanasa-activas (E. coli comensal, Bacteroides spp.) con pool de triptofano colonico elevado. Estrategia: reducir sustrato disponible para triptofanasa y reequilibrar el ecosistema.</p>
+                </div>
+                <div class="foods-block">
+                  <h5>🥗 Alimentos y Cantidades</h5>
+                  <ul><li><strong>Proteina animal limitada a 0.8-1.0g/kg/dia en 4 tomas:</strong> huevo, pescado blanco, pollo (alta digestibilidad ileal, menor residuo colonico)</li><li><strong>Calcio dietetico (quelante intestinal de indol):</strong> yogur/kefir/queso curado 2-3 raciones/dia; kale, brocoli 150g diario; tofu con calcio 3-4x/sem</li><li><strong>Pectinas:</strong> 2 manzanas/dia con piel + zanahoria cruda diaria (reducen pH colonico, inhiben E. coli triptofanasa)</li><li><strong>Avena 60-80g/dia:</strong> beta-glucanos viscosos que diluyen concentracion bacteriana triptofanasa</li><li><strong>Kefir 200ml/dia con L. acidophilus:</strong> compite con E. coli triptofanasa-activa</li></ul>
+                </div>
+                <div class="avoid-block">⚠ <strong>Evitar:</strong> Alta proteina animal (>1.5g/kg/dia) sin fibra; dieta baja en fibra; en ERC: no restringir proteina sin supervision medica</div><div class="protocol-block">📋 <strong>Protocolo:</strong> Sem. 1-3: Reducir proteina animal a 1.0g/kg/dia. 2-3 fuentes de calcio diarias. Pectinas diarias. Kefir o yogur activo diariamente.
+Sem. 4-8: Consolidar. En antecedentes de ERC o riesgo renal, solicitar IS plasmatico si disponible.
+Nota clinica: en ERC confirmada, modificacion proteica bajo supervision de nefrologo o dietista especializado.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  </section>
+
+  <div class="notes-card">
+    <svg class="wave-deco" viewBox="0 0 900 180" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,90 C75,0 150,180 225,90 S375,0 450,90 S600,180 675,90 S825,0 900,90" stroke="currentColor" stroke-width="7" fill="none"/></svg>
+    <h3>Notas Importantes</h3>
+    <div class="note-item"><div class="note-num">1</div><div class="note-text">Este plan es una guía basada en análisis de microbiota. Siempre consultar con el profesional de salud a cargo.</div></div>
+    <div class="note-item"><div class="note-num">2</div><div class="note-text">Introducir cambios de forma gradual. Si aparecen molestias digestivas, reducir la dosis y escalar más lento.</div></div>
+    <div class="note-item"><div class="note-num">3</div><div class="note-text">Hidratación fundamental: mínimo 2 litros de agua al día, preferentemente fuera de las comidas.</div></div>
+    <div class="note-item"><div class="note-num">4</div><div class="note-text">El ejercicio regular (≥150 min/semana intensidad moderada) potencia significativamente los cambios en microbiota.</div></div>
+    <div class="note-item"><div class="note-num">5</div><div class="note-text">Se recomienda repetir el análisis en 3–6 meses para evaluar respuesta y ajustar el plan.</div></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Generado el 30/04/2026 a las 23:56 &nbsp;&middot;&nbsp; <strong>ENTERIA</strong> &nbsp;&middot;&nbsp; enteria.uy</p>
+  <p style="margin-top:0.2rem;">Documento clínico confidencial — uso exclusivo del profesional de salud</p>
+</footer>
+
+<script>
+  function toggleIntervention(h){h.parentElement.classList.toggle('open');}
+  document.querySelectorAll('.phase-card').forEach(c=>{const f=c.querySelector('.intervention');if(f)f.classList.add('open');});
+  const tip=document.createElement('div');
+  tip.style.cssText='position:fixed;z-index:9999;max-width:240px;padding:0.55rem 0.85rem;background:#363636;color:rgba(255,255,255,0.9);font-family:Nunito Sans,sans-serif;font-size:0.74rem;line-height:1.5;border-radius:8px;box-shadow:0 4px 16px rgba(54,54,54,0.28);pointer-events:none;text-align:center;opacity:0;transition:opacity 0.15s ease;white-space:normal;';
+  document.body.appendChild(tip);
+  const arr=document.createElement('div');
+  arr.style.cssText='position:fixed;z-index:9998;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;pointer-events:none;opacity:0;transition:opacity 0.15s ease;';
+  document.body.appendChild(arr);
+  function showTip(el){const t=el.dataset.tooltip;if(!t)return;tip.textContent=t;tip.style.opacity='1';arr.style.opacity='1';const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,m=10,ah=6;const above=r.top>=th+m+ah||r.top>=window.innerHeight-r.bottom;const top=above?r.top-th-m-ah:r.bottom+m+ah;const aTop=above?r.top-m-ah:r.bottom+m;const aBorder=above?'border-top:6px solid #363636;border-bottom:none;':'border-bottom:6px solid #363636;border-top:none;';let left=Math.max(8,Math.min(r.left+r.width/2-tw/2,window.innerWidth-tw-8));let aLeft=Math.max(8,Math.min(r.left+r.width/2-6,window.innerWidth-14));tip.style.top=top+'px';tip.style.left=left+'px';arr.style.cssText+=';top:'+aTop+'px;left:'+aLeft+'px;'+aBorder;}
+  function hideTip(){tip.style.opacity='0';arr.style.opacity='0';}
+  document.querySelectorAll('.has-tooltip').forEach(el=>{el.addEventListener('mouseenter',()=>showTip(el));el.addEventListener('mouseleave',hideTip);});
+</script>
+</body>
+</html>
